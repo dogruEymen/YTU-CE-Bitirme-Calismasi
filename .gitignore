@@ -1,0 +1,5 @@
+.env
+.venv/
+venv/
+.txt
+node_modules/
