@@ -18,15 +18,14 @@ export default function Agent(){
 		setMessages(prev => [...prev, {id: id, text:input, sender: 'user', timestamp: new Date()}]);
 		setId(prev => prev+1);
 
+		setInput("");
+		
 		setWaitMessage(true);
 		const response: ChatResponse = await postMessage("http://127.0.0.1:8000/chat", input);
 
 		//
 		setMessages(prev => [...prev, {id: id, text:response.modelResponse, sender: 'agent', timestamp: new Date()}]);
 		setId(prev => prev+1);
-		//
-
-		setInput("");
 	}
 
 	useEffect(() => {
