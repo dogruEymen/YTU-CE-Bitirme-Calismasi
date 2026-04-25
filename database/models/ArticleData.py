@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Text, DateTime
 from database.db import Base
 # datetime kütüphanesi ileride varsayılan değer atamak isterseniz gerekli olabilir
 from datetime import datetime 
+from pgvector.sqlalchemy import Vector
 
 class ArxivArticle(Base):
     __tablename__ = "arxiv_articles"
@@ -50,3 +51,7 @@ class ArxivArticle(Base):
     # bu ihtimale karşı nullable=True (boş bırakılabilir) olarak ayarlıyoruz.
     pdf_url = Column(String(500), nullable=True)
     primary_category = Column(String(100), nullable=True)
+
+
+    # EMBEDDING
+    embedding = Column(Vector(768), nullable=True)
