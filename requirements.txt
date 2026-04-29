@@ -1,0 +1,22 @@
+# Web Framework & Server
+fastapi
+uvicorn
+httpx
+
+# Database & Migrations
+sqlalchemy
+psycopg2-binary
+alembic
+pgvector
+python-dotenv
+
+# AI & Machine Learning
+sentence-transformers
+scikit-learn
+numpy
+
+# Async & Task Queues
+celery
+redis
+pydantic
+asyncio
