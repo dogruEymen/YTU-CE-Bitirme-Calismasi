@@ -4,24 +4,18 @@ from database.db import Base
 from datetime import datetime 
 from pgvector.sqlalchemy import Vector
 
-class ArxivArticle(Base):
-    __tablename__ = "arxiv_articles"
+class Article(Base):
+    __tablename__ = "articles"
 
-    # 1. Primary Key (Birincil Anahtar)
-    # Neden standart bir 'id' ekliyoruz? arxiv_id zaten benzersiz değil mi?
-    # Evet, arXiv ID'leri benzersizdir. Ancak veritabanı tasarımı standartlarında, 
-    # dış dünyadan gelen (ve yapısı değişebilecek) ID'ler yerine, veritabanının 
-    # kendisinin yönettiği, otomatik artan (autoincrement) tam sayı bir 'id' 
-    # kullanmak her zaman daha güvenli ve performanslıdır (özellikle join işlemlerinde).
     id = Column(Integer, primary_key=True, autoincrement=True)
 
-    # 2. Arxiv ID
-    # arXiv ID'leri sadece sayıdan oluşmaz (örn: "2105.12345" veya eski format "hep-th/9912293").
-    # Bu yüzden 'Integer' değil, 'String' olmalıdır. Hızlı arama yapabilmek için 'index=True' 
-    # ve aynı makalenin iki kez kaydedilmesini önlemek için 'unique=True' diyoruz.
-    arxiv_id = Column(String(50), unique=True, index=True, nullable=False)
+    # Hangi kaynaktan geldiğini belirten alan (ör: 'arxiv', 'openalex', 'semanticscholar')
+    source = Column(String(50), nullable=False, index=True)
 
-    # 3. Başlık
+    # Kaynağa ait benzersiz ID (ör: arXiv ID, OpenAlex ID)
+    external_id = Column(String(100), unique=True, index=True, nullable=False)
+
+    # 3.Başlık
     # Başlıklar genellikle kısadır ancak bazen çok uzun bilimsel başlıklar olabilir.
     # Bu yüzden karakter sınırını geniş tutuyoruz.
     title = Column(String(500), nullable=False)
