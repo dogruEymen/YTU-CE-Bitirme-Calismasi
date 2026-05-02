@@ -14,6 +14,9 @@ python-dotenv
 sentence-transformers
 scikit-learn
 numpy
+torch
+torchvision
+torchaudio
 
 # Async & Task Queues
 celery
