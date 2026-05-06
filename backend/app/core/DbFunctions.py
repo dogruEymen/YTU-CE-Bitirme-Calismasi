@@ -51,7 +51,26 @@ class DbFunctions:
             db.close()
 
     @staticmethod
+    def get_articles_with_embedding(lim=1000):
+        try:
+            articles = db.query(Article)\
+                    .filter(Article.abstract_text.isnot(None))\
+                    .filter(Article.title.isnot(None))\
+                    .filter(Article.embedding.isnot(None))\
+                    .limit(lim)\
+                    .all()
+            return articles
+        except Exception as e:
+            print(f"Error getting articles: {str(e)}")
+            return []
+        finally:
+            db.close()
+    
+    @staticmethod
     def get_articles_for_embedding(lim=1000):
+        """
+        Embedding null olan satirlardan getirir. embedding uretim islemi icin.
+        """
         try:
             articles = db.query(Article)\
                     .filter(Article.abstract_text.isnot(None))\
