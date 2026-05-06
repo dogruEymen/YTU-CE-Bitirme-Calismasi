@@ -8,7 +8,8 @@ from datetime import datetime
 from sqlalchemy import text
 
 class Cluster:
-    num_of_articles = 6000 
+    num_of_articles = 1000 
+    top_representative_count = 10
     articles = DbFunctions.get_articles_with_embedding(lim=num_of_articles)
     clean_articles = [
         a for a in articles
@@ -64,7 +65,18 @@ class Cluster:
         for doc, topic in zip(Cluster.docs, topics):
             print(topic, "->", doc)
         print("\n=== TOPIC SUMMARY ===")
-        print(Cluster.topic_model.get_topic_info())
+        topic_info = Cluster.topic_model.get_topic_info()
+        print(topic_info)
+        
+        # REPRESENTATIVE DOCS
+        print("\n=== REPRESENTATIVE DOCS ===")
+        for _, row in topic_info.iterrows():
+            topic_id = row["Topic"]
+            if topic_id == -1:
+                continue
+            print(f"\nTopic {topic_id}:")
+            for doc in row["Representative_Docs"]:
+                print(f"  - {doc}")
         
         # Save to database
         Cluster.save_to_database(topics, probs)
@@ -106,11 +118,23 @@ class Cluster:
                     article_ids = cluster_articles.get(row['Topic'], [])
                     article_ids_str = ','.join(map(str, article_ids)) if article_ids else None
                     
+                    # Get top 5 most representative articles by ID for this cluster
+                    cluster_article_ids = cluster_articles.get(row['Topic'], [])
+                    if cluster_article_ids:
+                        # Get corresponding clean articles and their titles
+                        cluster_articles_list = [a for a in Cluster.clean_articles if a.id in cluster_article_ids]
+                        # Sort by some criteria (here we'll just take first N)
+                        top_articles = cluster_articles_list[:Cluster.top_representative_count]
+                        rep_docs_str = ','.join([str(a.id) for a in top_articles])  # Store IDs instead
+                    else:
+                        rep_docs_str = None
+                    
                     cluster = ClusterModel(
                         cluster_id=row['Topic'],
                         cluster_description=description,
                         article_count=row['Count'],
-                        article_ids=article_ids_str
+                        article_ids=article_ids_str,
+                        representative_docs=rep_docs_str
                     )
                     db.add(cluster)
                     cluster_counts[row['Topic']] = row['Count']
