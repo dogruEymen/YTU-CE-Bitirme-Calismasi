@@ -49,3 +49,7 @@ class Article(Base):
 
     # EMBEDDING
     embedding = Column(Vector(768), nullable=True)
+    
+    # CLUSTER ID
+    # Makalenin ait olduğu cluster ID'si
+    cluster_id = Column(Integer, nullable=True, index=True)
