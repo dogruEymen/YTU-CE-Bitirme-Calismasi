@@ -19,5 +19,8 @@ class Cluster(Base):
     # Clusterdaki tüm makale ID'leri (virgülle ayrılmış)
     article_ids = Column(Text, nullable=True)
     
+    # Clusterın temsilci dokümanları (virgülle ayrılmış)
+    representative_docs = Column(Text, nullable=True)
+    
     # Oluşturulma tarihi
     created_at = Column(DateTime, default=datetime.utcnow)
